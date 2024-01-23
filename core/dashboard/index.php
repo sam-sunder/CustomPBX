@@ -389,7 +389,7 @@
 		$remaining_mins = round($total_minutes - $totalinout, 2);
 
 		echo "<div class='d-flex'>";
-		echo "<a href='/app/domain-statistics/minutes_edit.php' class='btn text-white px-4 mx-2 ml-0' style='background-color:#fd9c03;'>Total Minutes: ".$total_minutes."</a>";
+		echo "<a href='#' class='btn text-white px-4 mx-2 ml-0' style='background-color:#fd9c03;'>Total Minutes: ".$total_minutes."</a>";
 		echo "<button class='btn btn-success px-4 mx-2'>Remaining Minutes: ".($remaining_mins >= 0 ? $remaining_mins : 0)."</button>";
 		echo "<button class='btn btn-secondary px-4 mx-2'>Used Minutes: ".$totalinout."</button>";
 		echo "</div>";

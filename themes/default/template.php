@@ -1168,7 +1168,8 @@
 				{$document_body}
 			</div>
 			<div id='footer'>
-				<span class='footer'>{$settings.theme.footer}</span>
+				
+				<span class='footer'>PhoneNexa. All rights reserved.</span>
 			</div>
 			{$container_close}
 		{/if}
