@@ -106,6 +106,10 @@
 		//$sql .= "and (domain_uuid = :domain_uuid or domain_uuid is null) ";
 		//$parameters['domain_uuid'] = $_SESSION['domain_uuid'];
 	}
+	if (if_group('user')){
+		$sql .= " and insert_user = :user_uuid ";
+		$parameters['user_uuid'] = $_SESSION['user_uuid'];
+	}
 	else {
 		$sql .= "and ( ";
 		$sql .= "	domain_uuid = :domain_uuid ";
@@ -167,6 +171,10 @@
 	$sql .= "from view_call_block ";
 	$sql .= "where true ";
 	$parameters['time_zone'] = $time_zone;
+	if (if_group('user')){
+		$sql .= " and insert_user = :user_uuid ";
+		$parameters['user_uuid'] = $_SESSION['user_uuid'];
+	}
 	if ($show == "all" && permission_exists('call_block_all')) {
 		//$sql .= "and (domain_uuid = :domain_uuid or domain_uuid is null) ";
 		//$parameters['domain_uuid'] = $_SESSION['domain_uuid'];

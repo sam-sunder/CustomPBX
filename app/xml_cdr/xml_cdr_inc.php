@@ -46,6 +46,28 @@
 		$_GET['show'] = 'false';
 	}
 
+// get user destinations
+$sql = "select destination_number from v_destinations ";
+$sql .= " where insert_user = '".$_SESSION["user_uuid"]."' ";
+$destinations = $database->select($sql, 'all');
+$destinations_str = "(";
+foreach ($destinations as $dest) {
+	$destinations_str .= "'".$dest["destination_number"]."', ";
+}
+$destinations_str = rtrim($destinations_str, ', ');
+$destinations_str .= ") ";
+
+// get user v_extensions
+$sql = "select extension_uuid from v_extensions ";
+$sql .= " where insert_user = '".$_SESSION["user_uuid"]."' ";
+$extensions = $database->select($sql, 'all');
+$extensions_str = "(";
+foreach ($extensions as $dest) {
+	$extensions_str .= "'".$dest["extension_uuid"]."', ";
+}
+$extensions_str = rtrim($extensions_str, ', ');
+$extensions_str .= ") ";
+
 //get post or get variables from http
 	if (!empty($_REQUEST)) {
 		$cdr_id = $_REQUEST["cdr_id"] ?? '';
@@ -223,7 +245,7 @@
 
 //prepare to page the results
 	//$rows_per_page = ($_SESSION['domain']['paging']['numeric'] != '') ? $_SESSION['domain']['paging']['numeric'] : 50; //set on the page that includes this page
-	if (empty($_GET['page']) || (!empty($_GET['page']) && !is_numeric($_GET['page']))) { 
+	if (empty($_GET['page']) || (!empty($_GET['page']) && !is_numeric($_GET['page']))) {
 		$_GET['page'] = 0;
 	}
 	//ensure page is within bounds of integer
@@ -514,7 +536,7 @@
 					$sql .= "	)) \n";
 				}
 				break;
-			default: 
+			default:
 				$sql .= "and (answer_stamp is null and bridge_uuid is null and duration = 0) \n";
 				//$sql .= "and (answer_stamp is null and bridge_uuid is null and billsec = 0 and sip_hangup_disposition = 'send_refuse') ";
 		}
@@ -575,6 +597,11 @@
 	//show agent originated legs only to those with the permission
 	if (!permission_exists('xml_cdr_cc_agent_leg')) {
 		$sql .= "and (cc_side is null or cc_side != 'agent') \n";
+	}
+	//client requirement - show only from user extensions and destinations
+	if (if_group('user')){
+		$sql .= " and (c.extension_uuid in ".$extensions_str." ";
+		$sql .= " or c.destination_number in ".$destinations_str." )";
 	}
 	//end where
 	if (!empty($order_by)) {

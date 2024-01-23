@@ -157,7 +157,7 @@
 				else{
 					$subnet = 32;
 				}
-				
+
 				if(($addr = inet_pton($ipaddr)) !== false){
 					$ips[] = $ipaddr.'/'.$subnet;
 				}
@@ -541,10 +541,20 @@
 
 								//assign the user to the extension
 									if (is_uuid($user_uuid)) {
-										$array["extension_users"][$i]["extension_user_uuid"] = uuid();
-										$array["extension_users"][$i]["domain_uuid"] = $domain_uuid;
-										$array["extension_users"][$i]["user_uuid"] = $user_uuid;
-										$array["extension_users"][$i]["extension_uuid"] = $extension_uuid;
+										if (!if_group('user')) {
+												$array["extension_users"][$i]["extension_user_uuid"] = uuid();
+												$array["extension_users"][$i]["domain_uuid"] = $domain_uuid;
+												$array["extension_users"][$i]["user_uuid"] = $user_uuid;
+												$array["extension_users"][$i]["extension_uuid"] = $extension_uuid;
+										}
+										else {
+											if ($action == 'add') {
+												$array["extension_users"][0]["extension_user_uuid"] = uuid();
+												$array["extension_users"][0]["domain_uuid"] = $domain_uuid;
+												$array["extension_users"][0]["user_uuid"] = $_SESSION["user_uuid"];
+												$array["extension_users"][0]["extension_uuid"] = $extension_uuid;
+											}
+										}
 									}
 
 								//assign the device to the extension(s)
@@ -1212,39 +1222,44 @@
 		echo "</tr>\n";
 	}
 
-	if (permission_exists('extension_user_edit')) {
-		echo "	<tr>";
-		echo "		<td class='vncell' valign='top'>".($action == "update" ? $text['label-users'] : $text['label-user'])."</td>";
-		echo "		<td class='vtable'>";
-		if (!empty($assigned_users) && is_array($assigned_users) && @sizeof($assigned_users) != 0 && $action == "update") {
-			echo "		<table width='30%'>\n";
-			foreach($assigned_users as $field) {
-				echo "		<tr>\n";
-				echo "			<td class='vtable'><a href='/core/users/user_edit.php?id=".escape($field['user_uuid'])."'>".escape($field['username'])."</a></td>\n";
-				echo "			<td>\n";
-				echo "				<a href='#' onclick=\"if (confirm('".$text['confirm-delete']."')) { document.getElementById('delete_type').value = 'user'; document.getElementById('delete_uuid').value = '".$field['user_uuid']."'; document.getElementById('frm').submit(); }\" alt='".$text['button-delete']."'>$v_link_label_delete</a>\n";
-				echo "			</td>\n";
-				echo "		</tr>\n";
+	if (!if_group('user')) {
+		if (permission_exists('extension_user_edit')) {
+			echo "	<tr>";
+			echo "		<td class='vncell' valign='top'>".($action == "update" ? $text['label-users'] : $text['label-user'])."</td>";
+			echo "		<td class='vtable'>";
+			if (!empty($assigned_users) && is_array($assigned_users) && @sizeof($assigned_users) != 0 && $action == "update") {
+				echo "		<table width='30%'>\n";
+				foreach($assigned_users as $field) {
+					echo "		<tr>\n";
+					echo "			<td class='vtable'><a href='/core/users/user_edit.php?id=".escape($field['user_uuid'])."'>".escape($field['username'])."</a></td>\n";
+					echo "			<td>\n";
+					echo "				<a href='#' onclick=\"if (confirm('".$text['confirm-delete']."')) { document.getElementById('delete_type').value = 'user'; document.getElementById('delete_uuid').value = '".$field['user_uuid']."'; document.getElementById('frm').submit(); }\" alt='".$text['button-delete']."'>$v_link_label_delete</a>\n";
+					echo "			</td>\n";
+					echo "		</tr>\n";
+				}
+				echo "		</table>\n";
+				echo "		<br />\n";
 			}
-			echo "		</table>\n";
-			echo "		<br />\n";
+			if (is_array($users) && @sizeof($users) != 0) {
+				echo "			<select name='extension_users[0][user_uuid]' id='user_uuid' class='formfld' style='width: auto;'>\n";
+				echo "			<option value=''></option>\n";
+				foreach($users as $field) {
+					echo "			<option value='".escape($field['user_uuid'])."'>".escape($field['username'])."</option>\n";
+				}
+				echo "			</select>";
+				if ($action == "update") {
+					echo button::create(['type'=>'submit','label'=>$text['button-add'],'icon'=>$_SESSION['theme']['button_icon_add']]);
+				}
+				echo "			<br>\n";
+			}
+			echo "			".$text['description-user_list']."\n";
+			echo "			<br />\n";
+			echo "		</td>";
+			echo "	</tr>";
 		}
-		if (is_array($users) && @sizeof($users) != 0) {
-			echo "			<select name='extension_users[0][user_uuid]' id='user_uuid' class='formfld' style='width: auto;'>\n";
-			echo "			<option value=''></option>\n";
-			foreach($users as $field) {
-				echo "			<option value='".escape($field['user_uuid'])."'>".escape($field['username'])."</option>\n";
-			}
-			echo "			</select>";
-			if ($action == "update") {
-				echo button::create(['type'=>'submit','label'=>$text['button-add'],'icon'=>$_SESSION['theme']['button_icon_add']]);
-			}
-			echo "			<br>\n";
-		}
-		echo "			".$text['description-user_list']."\n";
-		echo "			<br />\n";
-		echo "		</td>";
-		echo "	</tr>";
+	}
+	else {
+		echo "<input type='hidden' value='".$_SESSION["user_uuid"]."' name='extension_users[0][user_uuid]' id='user_uuid'> \n";
 	}
 
 	if (permission_exists('voicemail_edit') && is_dir($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/app/voicemails')) {
@@ -1271,7 +1286,7 @@
 			echo "    <br />\n";
 			echo "    ".$text['description-accountcode']."\n";
 			echo "</td>\n";
-			echo "</tr>\n";	
+			echo "</tr>\n";
 	}
 
 	if (permission_exists('device_edit') && (empty($extension_type) || $extension_type != 'virtual')) {

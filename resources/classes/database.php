@@ -890,7 +890,7 @@
 						return false;
 					}
 			}
-    
+
 			public function add() {
 				//connect to the database if needed
 					if (!$this->db) {

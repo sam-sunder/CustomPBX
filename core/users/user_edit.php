@@ -117,12 +117,14 @@
 				$username_old = $_POST["username_old"];
 			}
 			$domain_uuid = $_POST["domain_uuid"];
+			$organisation_uuid = $_POST["organisation_uuid"];
 			$username = $_POST["username"];
 			$password = $_POST["password"];
 			$password_confirm = $_POST["password_confirm"];
 			$user_email = $_POST["user_email"];
 			$user_status = $_POST["user_status"] ?? '';
 			$user_language = $_POST["user_language"];
+			$organisation_uuid = $_POST["organisation_uuid"];
 			$user_time_zone = $_POST["user_time_zone"];
 
 			if (permission_exists('contact_edit') && $action == 'edit') {
@@ -510,6 +512,7 @@
 
 		//add user setting to array for update
 			$array['users'][$x]['user_uuid'] = $user_uuid;
+			$array['users'][$x]['organisation_uuid'] = $organisation_uuid;
 			$array['users'][$x]['domain_uuid'] = $domain_uuid;
 			if (!empty($username) && (empty($username_old) || $username != $username_old)) {
 				$array['users'][$x]['username'] = $username;
@@ -607,7 +610,7 @@
 	else {
 		//populate the form with values from db
 			if ($action == 'edit') {
-				$sql = "select domain_uuid, user_uuid, username, user_email, api_key, user_totp_secret, ";
+				$sql = "select domain_uuid, organisation_uuid, user_uuid, username, user_email, api_key, user_totp_secret, ";
 				$sql .= "user_type, user_enabled, contact_uuid, cast(user_enabled as text), user_status ";
 				$sql .= "from v_users ";
 				$sql .= "where user_uuid = :user_uuid ";
@@ -620,6 +623,7 @@
 				$row = $database->select($sql, $parameters, 'row');
 				if (is_array($row) && sizeof($row) > 0) {
 					$domain_uuid = $row["domain_uuid"];
+					$organisation_uuid = $row["organisation_uuid"];
 					$user_uuid = $row["user_uuid"];
 					$username = $row["username"];
 					$user_email = $row["user_email"];
@@ -1031,6 +1035,26 @@
 
 		echo "		</td>";
 		echo "	</tr>";
+	}
+
+	if (permission_exists('user_organisation')) {
+		$sql .= "select * from v_organisations;";
+		$database = new database;
+		$user_orgs = $database->select($sql, $parameters, 'all');
+		echo "<tr>\n";
+		echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
+		echo "Organisation\n";
+		echo "</td>\n";
+		echo "<td class='vtable' align='left'>\n";
+		echo "    <select class='formfld' name='organisation_uuid'>\n";
+		foreach ($user_orgs as $row) {
+			echo "	<option value='".escape($row['organisation_uuid'])."' ".(($row['organisation_uuid'] == $organisation_uuid) ? "selected='selected'" : null).">".escape($row['organisation_name'])."</option>\n";
+		}
+		echo "    </select>\n";
+		echo "<br />\n";
+		echo "Select Organisation that this user belongs to. \n";
+		echo "</td>\n";
+		echo "</tr>\n";
 	}
 
 	if (permission_exists('user_type')) {

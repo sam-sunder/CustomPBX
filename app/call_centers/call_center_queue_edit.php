@@ -70,6 +70,10 @@
 			$sql = "select count(*) from v_call_center_queues ";
 			$sql .= "where domain_uuid = :domain_uuid ";
 			$parameters['domain_uuid'] = $_SESSION['domain_uuid'];
+			if (if_group('user')){
+				$sql .= " and insert_user = :user_uuid ";
+				$parameters['user_uuid'] = $_SESSION['user_uuid'];
+			}
 			$database = new database;
 			$total_call_center_queues = $database->select($sql, $parameters, 'column');
 			unset($sql, $parameters);
@@ -187,7 +191,7 @@
 			if ($action == "update") {
 				$call_center_queue_uuid = $_POST["call_center_queue_uuid"];
 			}
-	
+
 		//validate the token
 			$token = new token;
 			if (!$token->validate($_SERVER['PHP_SELF'])) {
@@ -320,7 +324,7 @@
 			$array['call_center_queues'][0]['call_center_queue_uuid'] = $call_center_queue_uuid;
 			$array['call_center_queues'][0]['dialplan_uuid'] = $dialplan_uuid;
 			$array['call_center_queues'][0]['domain_uuid'] = $domain_uuid;
-			
+
 			$y = 0;
 			if (!empty($_POST["call_center_tiers"])) {
 				foreach ($_POST["call_center_tiers"] as $row) {
@@ -584,6 +588,10 @@
 //get the agents
 	$sql = "select call_center_agent_uuid, agent_name from v_call_center_agents ";
 	$sql .= "where domain_uuid = :domain_uuid ";
+	if (if_group('user')){
+		$sql .= " and insert_user = :user_uuid ";
+		$parameters['user_uuid'] = $_SESSION['user_uuid'];
+	}
 	$sql .= "order by agent_name asc";
 	$parameters['domain_uuid'] = $_SESSION['domain_uuid'];
 	$database = new database;
@@ -1232,7 +1240,7 @@
 		$script .= "</script>\n";
 		$script .= "\n";
 		echo $script;
-		
+
 		echo "<select name='queue_announce_sound' id='queue_announce_sound' class='formfld'>\n";
 		echo "	<option></option>\n";
 
@@ -1271,12 +1279,12 @@
 			}
 			echo "</optgroup>\n";
 		}
-		
+
 		unset($tmp_selected);
 
 		echo "	</select>\n";
 		echo "<input type='button' id='btn_select_to_input_".escape($destination_id)."' class='btn' name='' alt='back' onclick='changeToInput".escape($destination_id)."(document.getElementById(\"".escape($destination_id)."\"));this.style.visibility = \"hidden\";' value='&#9665;'>";
-		
+
 		unset($destination_id);
 
 		echo "	<br />\n";

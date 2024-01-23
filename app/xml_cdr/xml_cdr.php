@@ -827,7 +827,7 @@
 				//call result/status
 					if (permission_exists("xml_cdr_status")) {
 						$content .= "	<td class='middle no-wrap hide-sm-dn'>".ucwords(escape($call_result))."</td>\n";
-					}	
+					}
 				//hangup cause
 					if (permission_exists('xml_cdr_hangup_cause')) {
 						$content .= "	<td class='middle no-wrap hide-sm-dn'><a href='".$list_row_url."'>".escape($hangup_cause)."</a></td>\n";
@@ -858,4 +858,3 @@
 
 //show the footer
 	require_once "resources/footer.php";
-

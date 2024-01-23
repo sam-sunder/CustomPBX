@@ -84,6 +84,10 @@
 		$sql = "select count(*) from v_extensions ";
 		$sql .= "where domain_uuid = :domain_uuid ";
 		$parameters['domain_uuid'] = $_SESSION['domain_uuid'];
+		if (if_group('user')){
+			$sql .= " and insert_user = :user_uuid ";
+			$parameters['user_uuid'] = $_SESSION['user_uuid'];
+		}
 		$database = new database;
 		$total_extensions = $database->select($sql, $parameters, 'column');
 		unset($sql, $parameters);
@@ -116,6 +120,10 @@
 	if (!(!empty($_GET['show']) && $_GET['show'] == "all" && permission_exists('extension_all'))) {
 		$sql .= "and domain_uuid = :domain_uuid ";
 		$parameters['domain_uuid'] = $_SESSION['domain_uuid'];
+		if (if_group('user')){
+			$sql .= " and insert_user = :user_uuid ";
+			$parameters['user_uuid'] = $_SESSION['user_uuid'];
+		}
 	}
 	$sql .= $sql_search ?? '';
 	$database = new database;

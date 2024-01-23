@@ -344,6 +344,10 @@
 	$sql = "select * from v_users ";
 	$sql .= "where domain_uuid = :domain_uuid ";
 	$sql .= "and user_enabled = 'true' ";
+	if (if_group('user')){
+		$sql .= " and user_uuid = :user_uuid ";
+		$parameters['user_uuid'] = $_SESSION['user_uuid'];
+	}
 	$sql .= "order by username asc ";
 	$parameters['domain_uuid'] = $_SESSION['domain_uuid'];
 	$database = new database;

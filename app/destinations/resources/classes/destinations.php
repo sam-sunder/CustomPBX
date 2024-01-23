@@ -237,6 +237,9 @@ if (!class_exists('destinations')) {
 								}
 								if (isset($row['where'])) {
 									$sql .= trim($row['where'])." ";
+									if (if_group('user')){
+										$sql .= " and insert_user = '".$_SESSION['user_uuid']."' ";
+									}
 								}
 								$sql .= "order by ".trim($row['order_by']);
 								$sql = str_replace("\${domain_uuid}", $this->domain_uuid, $sql);
@@ -338,7 +341,6 @@ if (!class_exists('destinations')) {
 				$response .= "	<select name='".$destination_name."' id='".$destination_id."' class='formfld' style='".$select_style."' onchange=\"".$onchange."\">\n";
 				$response .= "			<option value=''></option>\n";
 				foreach ($this->destinations as $row) {
-
 					$name = $row['name'];
 					$label = $row['label'];
 					$destination = $row['field']['destination'] ?? '';

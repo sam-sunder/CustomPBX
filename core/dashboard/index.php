@@ -27,6 +27,29 @@
 //includes files
 	require_once dirname(__DIR__, 2) . "/resources/require.php";
 
+	function do_sql($db, $query, $args=array(), $affected=false) {
+	  $statement = $db->prepare(check_sql($query));
+	  if($statement) {
+	    $result = $statement->execute($args);
+	    if($result) {
+	      $out = NULL;
+	      if($affected) {
+	        $out = $statement->rowCount();
+	      } else {
+	        $out = [];
+	        while($row = $statement->fetch()) {
+	          $out[] = $row;
+	        }
+	      }
+	      return $out;
+	    } else {
+	      die("Failed to execute SQL statement <code>$query</code>! SQLSTATE: ".$statement->errorInfo()[0].", <b><code>Error ".$statement->errorInfo()[1].": ".$statement->errorInfo()[2]."</code></b>");
+	    }
+	  } else {
+	    die("Failed to prepare the SQL statement <code>$query</code>! <b><code>".$db->errorInfo()[2]."</code></b>");
+	  }
+	}
+
 //if config.conf file does not exist then redirect to the install page
 	if (file_exists("/usr/local/etc/fusionpbx/config.conf")){
 		//BSD
@@ -319,17 +342,58 @@
 <?php
 
 //include the dashboards
-	echo "<div class='widgets' id='widgets' style='padding: 0 5px;'>\n";
-	$x = 0;
-	foreach($dashboard as $row) {
-		$dashboard_name = strtolower($row['dashboard_name']);
-		$dashboard_name = str_replace(" ", "_", $dashboard_name);
-		echo "<div class='widget' id='".$dashboard_name."' draggable='false'>\n";
-			include($row['dashboard_path']);
+ 	if (!if_group("user")) {
+		echo "<div class='widgets' id='widgets' style='padding: 0 5px;'>\n";
+		$x = 0;
+		foreach($dashboard as $row) {
+			$dashboard_name = strtolower($row['dashboard_name']);
+			$dashboard_name = str_replace(" ", "_", $dashboard_name);
+			echo "<div class='widget' id='".$dashboard_name."' draggable='false'>\n";
+				include($row['dashboard_path']);
+			echo "</div>\n";
+			$x++;
+		}
 		echo "</div>\n";
-		$x++;
 	}
-	echo "</div>\n";
+	else {
+		// Get total minutes
+		$sql = "select * from v_bill_stats ";
+		$sql .= "where domain_uuid = :domain_uuid ";
+		$sql .= "and user_uuid = :user_uuid ";
+		$parameters['domain_uuid'] = $_SESSION["domain_uuid"];
+		$parameters['user_uuid'] = $_SESSION["user_uuid"];
+		$database = new database;
+		$row = $database->select($sql, $parameters ?? null, 'row');
+		if (!empty($row)) {	$total_minutes = $row["total_minutes"]; }
+		else { $total_minutes=0; }
+		// Get Used minutes
+		$start_stamp_begin = date("Y-m-d", strtotime("-1 months"));
+		$start_stamp_end = date("Y-m-d");
+		$user_uuid = $_SESSION['user_uuid'];
+		$user_calltime = array();
+
+		foreach($_SESSION["user"]["extension"] as $extension) {
+			$extension_uuid = $extension['extension_uuid'];
+			$extension_calltime = array();
+
+			$sql = "select direction, SUM(duration) from v_xml_cdr where v_xml_cdr.extension_uuid = :extension_uuid GROUP BY direction;";
+			$parameters = array("extension_uuid" => $extension_uuid);
+			$rows = $database->select($sql, $parameters ?? null, 'all');
+			foreach($rows as $domainrow) {
+				$extension_calltime[$domainrow['direction']] = $domainrow['sum']/60;
+				$extension_calltime[$domainrow['direction']] = $domainrow['sum']/60;
+				$extension_calltime[$domainrow['direction']] = $domainrow['sum']/60;
+			}
+		}
+		$totalinout = round($extension_calltime['inbound'] + $extension_calltime['outbound'] + $extension_calltime['local'], 2);
+		$remaining_mins = round($total_minutes - $totalinout, 2);
+
+		echo "<div class='d-flex'>";
+		echo "<a href='/app/domain-statistics/minutes_edit.php' class='btn text-white px-4 mx-2 ml-0' style='background-color:#fd9c03;'>Total Minutes: ".$total_minutes."</a>";
+		echo "<button class='btn btn-success px-4 mx-2'>Remaining Minutes: ".($remaining_mins >= 0 ? $remaining_mins : 0)."</button>";
+		echo "<button class='btn btn-secondary px-4 mx-2'>Used Minutes: ".$totalinout."</button>";
+		echo "</div>";
+	}
 
 //begin edit
 	if (permission_exists('dashboard_edit')) {

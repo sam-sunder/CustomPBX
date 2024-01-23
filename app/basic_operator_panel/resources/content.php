@@ -60,7 +60,7 @@ if (is_array($activity)) {
 }
 if (!empty($groups)) {
 	$groups = array_unique($groups);
-	sort($groups); 
+	sort($groups);
 }
 
 //get the valet info
@@ -335,12 +335,12 @@ if (is_array($activity)) {
 				}
 			}
 		}
-		if ($found_count > 0) {	
+		if ($found_count > 0) {
 			//determine block style by state (if any) and register status
 			$style = !empty($ext_state) ? "op_ext op_state_".$ext_state : "op_ext";
 		}
 		else {
-			$style = "off_ext";	
+			$style = "off_ext";
 		}
 		unset($extension_number, $found_count, $array);
 
@@ -536,7 +536,7 @@ if (is_array($activity)) {
 		} elseif (!empty($ext['call_group']) && filter_var($_SESSION['operator_panel']['group_extensions']['boolean'], FILTER_VALIDATE_BOOLEAN)) {
 			$grouped_extensions[$ext['call_group']][] = $block;
 		} else {
-			$other_extensions[] = $block;
+			// $other_extensions[] = $block;
 		}
 	}
 }
@@ -641,7 +641,7 @@ if (sizeof($user_extensions) > 0) {
 if (sizeof($grouped_extensions) > 0) {
 	//alphabetical order
 	ksort($grouped_extensions);
-	
+
 	//loop through the groups
 	foreach ($grouped_extensions as $group => $extensions) {
 		echo "<div class=\"heading\"><strong>".ucwords(escape($group))."</strong></div>\n";
@@ -655,7 +655,7 @@ if (sizeof($grouped_extensions) > 0) {
 }
 
 //show the other extensions
-if (sizeof($other_extensions) > 0) {
+/* if (sizeof($other_extensions) > 0) {
 	echo "<div class=\"heading\"><strong>".$text['label-other_extensions']."</strong></div>\n";
 	echo "<br><br>\n";
 	echo "<table width='100%'><tr><td>\n";
@@ -663,13 +663,12 @@ if (sizeof($other_extensions) > 0) {
 		echo $ext_block;
 	}
 	echo "</td></tr></table>\n";
-}
+} */
 
 //no extensions found
 if (sizeof($other_extensions) + sizeof($grouped_extensions) < 1) {
-	echo $text['label-no_extensions_found'];
+	// echo $text['label-no_extensions_found'];
 }
-
 echo "<br><br>\n";
 
 /*

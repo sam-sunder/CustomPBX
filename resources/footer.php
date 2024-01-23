@@ -26,6 +26,7 @@
 
 //includes files
     require_once __DIR__ . "/require.php";
+    require_once __DIR__ . "/custom_menu.php";
 
 //set variables if not set
 	//if (!isset($_SESSION["template_content"])) { $_SESSION["template_content"] = null; }
@@ -206,7 +207,12 @@
 					$container_open = "<div id='menu_side_container' ".($_SESSION['theme']['menu_side_state']['text'] == 'hidden' ? "style='display: none;'" : "class='hide-xs'").$menu_side_toggle." >\n";
 					$menu = new menu;
 					$menu->text = $text;
-					$menu_html = $menu->menu_vertical($_SESSION['menu']['array']);
+          $container_open .= "<div style='></div>";
+          if(if_group("user")){
+            $menu_html = $menu->menu_vertical($user_menu);
+          } else {
+            $menu_html = $menu->menu_vertical($_SESSION['menu']['array']);
+          }
 					unset($menu);
 					break;
 				case 'inline':

@@ -132,6 +132,10 @@
 		$sql .= "and (domain_uuid = :domain_uuid or domain_uuid is null) ";
 		$parameters['domain_uuid'] = $domain_uuid;
 	}
+	if (if_group('user')){
+		$sql .= " and insert_user = :user_uuid ";
+		$parameters['user_uuid'] = $_SESSION['user_uuid'];
+	}
 	if (!empty($search)) {
 		$sql .= "and (";
 		$sql .= "lower(destination_type) like :search ";
@@ -176,6 +180,10 @@
 		$sql .= "where destination_type = :destination_type ";
 		$sql .= "and (domain_uuid = :domain_uuid or domain_uuid is null) ";
 		$parameters['domain_uuid'] = $domain_uuid;
+	}
+	if (if_group('user')){
+		$sql .= " and insert_user = :user_uuid ";
+		$parameters['user_uuid'] = $_SESSION['user_uuid'];
 	}
 	if (!empty($search)) {
 		$sql .= "and (";

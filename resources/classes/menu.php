@@ -613,7 +613,7 @@ if (!class_exists('menu')) {
 					}
 
 					if ($menu_item_level == 0) {
-						$menu_html  = "<ul class='menu_main'>\n";
+						$menu_html .= "<ul class='menu_main'>\n";
 						$menu_html .= "<li>\n";
 						if (!isset($_SESSION["username"])) {
 							$_SESSION["username"] = '';
@@ -1161,7 +1161,7 @@ if (!class_exists('menu')) {
 				$html .= "<div class='float-right' style='white-space: nowrap;'>";
 				//current user
 					$html .= "<span style='display: inline-block; padding-right: 20px; font-size: 90%;'>\n";
-					$html .= "	<a href='".PROJECT_PATH."/core/users/user_edit.php?id=user' title=\"".$this->text['theme-label-user']."\"><i class='fas fa-".($_SESSION['theme']['body_header_icon_user']['text'] != '' ? $_SESSION['theme']['body_header_icon_user']['text'] : 'user-circle')." fa-lg fa-fw' style='margin-top: 6px; margin-right: 5px;'></i>".$_SESSION['username']."</a>";
+					$html .= "	<a href='".PROJECT_PATH."/core/users/user_edit.php?id=user' title=\"".$this->text['theme-label-user']."\"><i class='fas fa-".($_SESSION['theme']['body_header_icon_user']['text'] != '' ? $_SESSION['theme']['body_header_icon_user']['text'] : 'user-circle')." fa-lg fa-fw' style='margin-top: 6px; margin-right: 5px;'></i>".$_SESSION['user_email']."</a>";
 					$html .= "</span>\n";
 				//domain name/selector (sm+)
 					if (!empty($_SESSION['username']) && permission_exists('domain_select') && count($_SESSION['domains']) > 1 && $_SESSION['theme']['domain_visible']['text'] == 'true') {
