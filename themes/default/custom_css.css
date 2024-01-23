@@ -1,0 +1,37 @@
+body {
+  background: linear-gradient(90deg, #031b4d 0%, rgba(8,0,255,1) 100%) !important;
+}
+
+div#menu_side_container {
+  background: #031b4d !important;
+}
+
+i.menu_side_item_icon {
+  color: #a4ea2e !important;
+}
+
+a.menu_side_item_main {
+  font-weight: bold;
+}
+
+a.menu_side_item_sub {
+  font-weight: bold;
+}
+
+a.menu_side_item_main:hover {
+  background-color: #e5e8ed !important;
+  color: #031b4d !important;
+}
+
+a.menu_side_item_sub {
+  background: #031b4d !important;
+}
+
+a.menu_side_item_sub:hover {
+  background-color: #e5e8ed !important;
+  color: #031b4d !important;
+}
+
+div:has(a.menu_brand_image) {
+  background: #031b4d !important;
+}
