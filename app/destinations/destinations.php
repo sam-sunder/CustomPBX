@@ -133,7 +133,11 @@
 		$parameters['domain_uuid'] = $domain_uuid;
 	}
 	if (if_group('user')){
+<<<<<<< HEAD
 		$sql .= " and insert_user = :user_uuid ";
+=======
+		$sql .= " and user_uuid = :user_uuid ";
+>>>>>>> aa447fad7 (Version 1.0)
 		$parameters['user_uuid'] = $_SESSION['user_uuid'];
 	}
 	if (!empty($search)) {
@@ -182,7 +186,11 @@
 		$parameters['domain_uuid'] = $domain_uuid;
 	}
 	if (if_group('user')){
+<<<<<<< HEAD
 		$sql .= " and insert_user = :user_uuid ";
+=======
+		$sql .= " and user_uuid = :user_uuid ";
+>>>>>>> aa447fad7 (Version 1.0)
 		$parameters['user_uuid'] = $_SESSION['user_uuid'];
 	}
 	if (!empty($search)) {

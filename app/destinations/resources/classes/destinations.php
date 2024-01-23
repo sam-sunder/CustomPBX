@@ -238,7 +238,13 @@ if (!class_exists('destinations')) {
 								if (isset($row['where'])) {
 									$sql .= trim($row['where'])." ";
 									if (if_group('user')){
+<<<<<<< HEAD
 										$sql .= " and insert_user = '".$_SESSION['user_uuid']."' ";
+=======
+										if ($row["label"] == "extensions"){
+											$sql .= " and extension_uuid in (select extension_uuid from v_extension_users where user_uuid='".$_SESSION["user_uuid"]."') ";
+										}
+>>>>>>> aa447fad7 (Version 1.0)
 									}
 								}
 								$sql .= "order by ".trim($row['order_by']);

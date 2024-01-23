@@ -62,8 +62,17 @@
 //get the agents from the database
 	$sql = "select * from v_call_center_agents ";
 	$sql .= "where domain_uuid = :domain_uuid ";
+<<<<<<< HEAD
 	$sql .= "order by agent_name asc ";
 	$parameters['domain_uuid'] = $_SESSION['domain_uuid'];
+=======
+	if (if_group('user')) {
+		$sql .= " and insert_user = :user_uuid ";
+	}
+	$sql .= "order by agent_name asc ";
+	$parameters['domain_uuid'] = $_SESSION['domain_uuid'];
+	$parameters['user_uuid'] = $_SESSION['user_uuid'];
+>>>>>>> aa447fad7 (Version 1.0)
 	$database = new database;
 	$agents = $database->select($sql, $parameters, 'all');
 	unset($sql, $parameters);
@@ -228,7 +237,11 @@
 										}
 									}
 								}
+<<<<<<< HEAD
 								
+=======
+
+>>>>>>> aa447fad7 (Version 1.0)
 							}
 							//echo $command."\n";
 

@@ -85,8 +85,12 @@
 		$sql .= "where domain_uuid = :domain_uuid ";
 		$parameters['domain_uuid'] = $_SESSION['domain_uuid'];
 		if (if_group('user')){
+<<<<<<< HEAD
 			$sql .= " and insert_user = :user_uuid ";
 			$parameters['user_uuid'] = $_SESSION['user_uuid'];
+=======
+			$sql .= " and extension_uuid in (select extension_uuid from v_extension_users where user_uuid='".$_SESSION["user_uuid"]."') ";
+>>>>>>> aa447fad7 (Version 1.0)
 		}
 		$database = new database;
 		$total_extensions = $database->select($sql, $parameters, 'column');
@@ -121,8 +125,12 @@
 		$sql .= "and domain_uuid = :domain_uuid ";
 		$parameters['domain_uuid'] = $_SESSION['domain_uuid'];
 		if (if_group('user')){
+<<<<<<< HEAD
 			$sql .= " and insert_user = :user_uuid ";
 			$parameters['user_uuid'] = $_SESSION['user_uuid'];
+=======
+			$sql .= " and extension_uuid in (select extension_uuid from v_extension_users where user_uuid='".$_SESSION["user_uuid"]."' )";
+>>>>>>> aa447fad7 (Version 1.0)
 		}
 	}
 	$sql .= $sql_search ?? '';
