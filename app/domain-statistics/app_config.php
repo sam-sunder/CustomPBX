@@ -20,23 +20,20 @@ $apps[$x]['description']['pt-br'] = "";
 
 //permission details
 $y=0;
-$apps[$x]['permissions'][$y]['name'] = "domain_statistics";
-$apps[$x]['permissions'][$y]['groups'][] = "superadmin";
-$y++;
 $apps[$x]['permissions'][$y]['name'] = 'bill_stat_view';
-$apps[$x]['permissions'][$y]['groups'][] = 'user';
+$apps[$x]['permissions'][$y]['groups'][] = 'superadmin';
 $y++;
 $apps[$x]['permissions'][$y]['name'] = 'bill_stat_add';
-$apps[$x]['permissions'][$y]['groups'][] = 'user';
+$apps[$x]['permissions'][$y]['groups'][] = 'superadmin';
 $y++;
 $apps[$x]['permissions'][$y]['name'] = 'bill_stat_edit';
-$apps[$x]['permissions'][$y]['groups'][] = 'user';
+$apps[$x]['permissions'][$y]['groups'][] = 'superadmin';
 $y++;
 $apps[$x]['permissions'][$y]['name'] = 'bill_stat_delete';
-$apps[$x]['permissions'][$y]['groups'][] = 'user';
+$apps[$x]['permissions'][$y]['groups'][] = 'superadmin';
 $y++;
 $apps[$x]['permissions'][$y]['name'] = 'bill_stat_all';
-$apps[$x]['permissions'][$y]['groups'][] = 'user';
+$apps[$x]['permissions'][$y]['groups'][] = 'superadmin';
 $y++;
 
 // DB
