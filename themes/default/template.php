@@ -21,6 +21,7 @@
 	<link rel='stylesheet' type='text/css' href='{$project_path}/resources/bootstrap/css/bootstrap-colorpicker.min.css.php'>
 	<link rel='stylesheet' type='text/css' href='{$project_path}/resources/fontawesome/css/all.min.css.php'>
 	<link rel='stylesheet' type='text/css' href='{$project_path}/themes/default/css.php'>
+	<link rel='stylesheet' type='text/css' href='{$project_path}/themes/default/custom_css.css'>
 {*//link to custom css file *}
 	{if !empty($settings.theme.custom_css)}
 		<link rel='stylesheet' type='text/css' href='{$settings.theme.custom_css}'>
